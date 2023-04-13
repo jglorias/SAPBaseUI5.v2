@@ -9,6 +9,8 @@
 		<Toolbar>
 			<content>
 				<Title text="{i18n>Shipments}" level="H2"/>
+				<ToolbarSpacer/>
+				<Button icon="sap-icon://add" press=".onOpenShipmentFragment" tooltip="{i18n>addShipmentTooltip}"/>
 			</content>
 		</Toolbar>
 	</headerToolbar>
@@ -25,6 +27,7 @@
 		<Column>
 			<Text text="{i18n>Status}"/>
 		</Column>
+		<Column hAlign="End"/>
 	</columns>
 	<items>
 		<ColumnListItem>
@@ -32,7 +35,11 @@
 				<Text text="{code}"/>
 				<Text text="{origin}"/>
 				<Text text="{destination}"/>
-				<ObjectStatus text="{status}" state="{= ${status} === 'Shipped' ? 'Success' : ${status} === 'Missing' ? 'Warning' : ${status} === 'Preparing' ? 'Information' : 'Error'}" icon="{= ${status} === 'Shipped' ? 'sap-icon://accept' : ${status} === 'Missing' ? 'sap-icon://status-critical' : ${status} === 'Preparing' ? 'sap-icon://begin' : 'sap-icon://status-negative'}"/>
+				<ObjectStatus text="{status}" 
+				state="{= ${status} === 'Shipped' ? 'Success' : ${status} === 'Missing' ? 'Warning' : ${status} === 'Preparing' ? 'Information' : 'Error'}" 
+				icon="{= ${status} === 'Shipped' ? 'sap-icon://accept' : ${status} === 'Missing' ? 'sap-icon://status-critical' : ${status} === 'Preparing' ? 'sap-icon://begin' : 'sap-icon://status-negative'}"
+				/>
+				<Button tooltip="{i18n>deleteShipment}" icon="sap-icon://delete" press=".onDeleteShipment"/>
 			</cells>
 		</ColumnListItem>
 	</items>
