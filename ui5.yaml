@@ -27,5 +27,5 @@ server:
         component: nodebaseui5
         ui5Theme: sap_horizon
 framework:
-  name: OpenUI5
-  version: "1.112.0"
+  name: SAPUI5
+  version: "1.113.0"

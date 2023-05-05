@@ -1,7 +1,6 @@
 sap.ui.define(["sap/ui/model/json/JSONModel"], function (JSONModel) {
   "use strict";
 
-  // Firebase-config retrieved from the Firebase-console
   const firebaseConfig = {
     apiKey: "AIzaSyBJYq3xg40-b2Y7VvafmTU0PaFDYj26GvU",
     authDomain: "nodebaseui5.firebaseapp.com",
@@ -14,21 +13,21 @@ sap.ui.define(["sap/ui/model/json/JSONModel"], function (JSONModel) {
 
   return {
     initializeFirebase: function () {
-      // Initialize Firebase with the Firebase-config
-      firebase.initializeApp(firebaseConfig);
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
 
-      // Create a Firestore reference
       const firestore = firebase.firestore();
 
-      // Firebase services object
+      const fireAuth = firebase.auth();
+
+
       const oFirebase = {
         firestore: firestore,
+        fireAuth: fireAuth,
       };
 
-      // Create a Firebase model out of the oFirebase service object which contains all required Firebase services
       var fbModel = new JSONModel(oFirebase);
-
-      // Return the Firebase Model
       return fbModel;
     },
   };

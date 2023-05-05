@@ -1,49 +1,51 @@
-<mvc:View controllerName="nodebaseui5.controller.View"
-    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m">
-	<Shell>
-    <Page id="page" title="{i18n>title}">
-        <MessageStrip id="messageStrip" text="{i18n>fbSecurityRules}" type="Warning" showIcon="true" showCloseButton="true" class="sapUiMediumMarginBottom"/>
-<Table id="shipmentTable" items="{/shipments}">
-	<headerToolbar>
-		<Toolbar>
-			<content>
-				<Title text="{i18n>Shipments}" level="H2"/>
-				<ToolbarSpacer/>
-				<Button icon="sap-icon://add" press=".onOpenShipmentFragment" tooltip="{i18n>addShipmentTooltip}"/>
-			</content>
-		</Toolbar>
-	</headerToolbar>
-	<columns>
-		<Column>
-			<Text text="{i18n>ShipmentId}"/>
-		</Column>
-		<Column>
-			<Text text="{i18n>Origin}"/>
-		</Column>
-		<Column>
-			<Text text="{i18n>Destination}"/>
-		</Column>
-		<Column>
-			<Text text="{i18n>Status}"/>
-		</Column>
-		<Column hAlign="End"/>
-	</columns>
-	<items>
-		<ColumnListItem>
-			<cells>
-				<Text text="{code}"/>
-				<Text text="{origin}"/>
-				<Text text="{destination}"/>
-				<ObjectStatus text="{status}" 
-				state="{= ${status} === 'Shipped' ? 'Success' : ${status} === 'Missing' ? 'Warning' : ${status} === 'Preparing' ? 'Information' : 'Error'}" 
-				icon="{= ${status} === 'Shipped' ? 'sap-icon://accept' : ${status} === 'Missing' ? 'sap-icon://status-critical' : ${status} === 'Preparing' ? 'sap-icon://begin' : 'sap-icon://status-negative'}"
-				/>
-				<Button tooltip="{i18n>deleteShipment}" icon="sap-icon://delete" press=".onDeleteShipment"/>
-			</cells>
-		</ColumnListItem>
-	</items>
-</Table>
-    </Page>
+<mvc:View controllerName="nodebaseui5.controller.View" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m" xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Shell id="shell">
+		<App id="app">
+			<pages>
+				<Page id="page" title="{i18n>title}">
+					<content>
+						<Table id="shipmentTable" items="{ path: 'shipmentModel>/shipments', sorter: {path: 'code'}}">
+							<headerToolbar>
+								<Toolbar>
+									<content>
+										<Title text="{i18n>Shipments}" level="H2"/>
+										<ToolbarSpacer/>
+										<Button icon="sap-icon://add" press=".onOpenShipmentFragment" tooltip="{i18n>addShipmentTooltip}"/>
+									</content>
+								</Toolbar>
+							</headerToolbar>
+							<columns>
+								<Column>
+									<Text text="{i18n>ShipmentCode}"/>
+								</Column>
+								<Column>
+									<Text text="{i18n>Origin}"/>
+								</Column>
+								<Column>
+									<Text text="{i18n>Destination}"/>
+								</Column>
+								<Column>
+									<Text text="{i18n>Status}"/>
+								</Column>
+								<Column hAlign="End"/>
+							</columns>
+							<items>
+								<ColumnListItem>
+									<cells>
+										<Text text="{shipmentModel>code}"/>
+										<Text text="{shipmentModel>destination}"/>
+										<Text text="{shipmentModel>origin}"/>
+										<ObjectStatus text="{shipmentModel>status}"
+											state="{= ${shipmentModel>status} === 'Shipped' ? 'Success' : ${shipmentModel>status} === 'Missing' ? 'Warning' : ${shipmentModel>status} === 'Preparing' ? 'Information' : 'Error'}"
+											icon="{= ${shipmentModel>status} === 'Shipped' ? 'sap-icon://accept' : ${shipmentModel>status} === 'Missing' ? 'sap-icon://status-critical' : ${shipmentModel>status} === 'Preparing' ? 'sap-icon://begin' : 'sap-icon://status-negative'}"/>
+										<Button tooltip="{i18n>deleteShipment}" icon="sap-icon://delete" press=".onDeleteShipment" app:shipment="{shipmentModel>}"/>
+									</cells> 
+								</ColumnListItem>
+							</items>
+						</Table>
+					</content>
+				</Page>
+			</pages>
+		</App>
 	</Shell>
 </mvc:View>

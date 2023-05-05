@@ -3,7 +3,7 @@
 		<VBox class="sapUiSmallMargin">
 			<f:SimpleForm editable="true" layout="ResponsiveGridLayout">
 				<f:content>
-					<Label text="{i18n>ShipmentId}" required="true"/>
+					<Label text="{i18n>ShipmentCode}" required="true"/>
 					<Input value="{shipmentModel>/currentShipment/code}"/>
 					<Label text="{i18n>Origin}"/>
 					<Input value="{shipmentModel>/currentShipment/origin}"></Input>

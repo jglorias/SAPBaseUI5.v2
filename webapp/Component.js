@@ -23,18 +23,14 @@ sap.ui.define(
        * @override
        */
       init: function () {
-        // call the base component's init function
-        UIComponent.prototype.init.apply(this, arguments);
 
-        // enable routing
-        this.getRouter().initialize();
+			UIComponent.prototype.init.apply(this, arguments);
 
-        // set the device model
-        this.setModel(models.createDeviceModel(), "device");
+			this.getRouter().initialize();
 
-        // Import Firebase in the sap.ui.define
-        // set the firebase model by calling the initializeFirebase function in the Firebase.js file
-        this.setModel(Firebase.initializeFirebase(), "firebase");
+			this.setModel(models.createDeviceModel(), "device");
+
+			this.setModel(Firebase.initializeFirebase(), "firebase");
       },
     });
   }

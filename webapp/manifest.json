@@ -64,7 +64,20 @@
         {
           "uri": "css/style.css"
         }
-      ]
+      ],
+      "js": [{
+				"uri": "libs/firebase-app.js",
+				"name": "FirebaseApp",
+				"version": "6.2.0"
+			}, {
+				"uri": "libs/firebase-firestore.js",
+				"name": "FirebaseFirestore",
+				"version": "6.2.0"
+			}, {
+				"uri": "libs/firebase-auth.js",
+				"name": "FirebaseAuth",
+				"version": "6.2.0"
+			}]
     },
     "routing": {
       "config": {
@@ -79,8 +92,8 @@
       "routes": [
         {
           "name": "RouteView",
-          "pattern": ":?query:",
-          "target": ["TargetView"]
+          "pattern": "RouteView",
+          "target": ["RouteView"]
         }
       ],
       "targets": {
@@ -97,7 +110,7 @@
       "viewName": "nodebaseui5.view.View",
       "type": "XML",
       "async": true,
-      "id": "App"
+      "id": "nodebaseui5.view.View"
     }
   }
 }

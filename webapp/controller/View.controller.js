@@ -1,88 +1,103 @@
 sap.ui.define(
-  ["sap/ui/core/mvc/Controller", "sap/ui/model/json/JSONModel"],
-  /**
-   * @param {typeof sap.ui.core.mvc.Controller} Controller
-   */
-  function (Controller, JSONModel) {
+  [
+    "sap/ui/core/mvc/Controller",
+    "sap/m/MessageBox",
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageToast",
+  ],
+  function (Controller, MessageBox, JSONModel, MessageToast) {
     "use strict";
 
-    return Controller.extend("nodebaseui5.controller.View.", {
+    return Controller.extend("nodebaseui5.controller.View", {
+      collRefShipments: null,
+
       onInit: function () {
+        const firebaseModelOld = this.getView().getModel("firebase");
+
+        // Create a Firestore reference (for real time view)
+        const firestoreOld = this.getView()
+          .getModel("firebase")
+          .getData().firestore;
+        // Create a collection reference to the shipments collection (for real time view)
+        const collRefShipments = firestoreOld.collection("shipments");
+
         // Get the Firebase Model
         const firebaseModel = this.getView().getModel("firebase");
+
+        // Create a Authentication reference
+        const fireAuth = this.getView()
+          .getModel("firebase")
+          .getProperty("/fireAuth");
 
         // Create a Firestore reference
         const firestore = this.getView()
           .getModel("firebase")
-          .getData().firestore;
-        // Create a collection reference to the shipments collection
-        const collRefShipments = firestore.collection("shipments");
+          .getProperty("/firestore");
+        // Create a collection reference to the shipments collection (not used for real time view but for add and delete)
+        this.collRefShipments = firestore.collection("shipments");
 
-        // Initialize an array for the shipments of the collection as an object
+        // Initialize an array for the shipments from firebase database
         var oShipments = {
           shipments: [],
+          possibleShipmentStatus: [
+            {
+              id: "Damaged",
+              status: "Damaged",
+            },
+            {
+              id: "Missing",
+              status: "Missing",
+            },
+            {
+              id: "Preparing",
+              status: "Preparing",
+            },
+            {
+              id: "Shipped",
+              status: "Shipped",
+            },
+          ],
+          currentShipment: {},
         };
 
-        // Create and set the created object to the the shipmentModel
+        // Create and set object to the shipmentModel
         var shipmentModel = new JSONModel(oShipments);
-        this.getView().setModel(shipmentModel);
-
-        // // Get single set of shipments once
-        // this.getShipments(collRefShipments);
+        this.getView().setModel(shipmentModel, "shipmentModel");
 
         //Real Time Shipments
         this.getRealTimeShipments(collRefShipments);
+
+        fireAuth.onAuthStateChanged(
+          function (user) {
+            if (user) {
+              // Get realtime shipments
+              his.getRealTimeShipments();
+            }
+          }.bind(this)
+        );
       },
 
-      // getShipments: function (collRefShipments) {
-      //   collRefShipments.get().then(
-      //     function (collection) {
-      //       var shipmentModel = this.getView().getModel();
-      //       var shipmentData = shipmentModel.getData();
-      //       var shipments = collection.docs.map(function (docShipment) {
-      //         return docShipment.data();
-      //       });
-      //       shipmentData.shipments = shipments;
-      //       this.getView().byId("shipmentTable").getBinding("items").refresh();
-      //     }.bind(this)
-      //   );
-      // },
-
-      getRealTimeShipments: function (collRefShipments) {
-        // The onSnapshot the keep the data up to date in case of added,
-        // modified or removed data in the Firestor database
-        collRefShipments.onSnapshot(
+      getRealTimeShipments: function () {
+        this.collRefShipments.onSnapshot(
           function (snapshot) {
-            // Get the shipment model
-            var shipmentModel = this.getView().getModel();
-            // Get all the shipments
+            var shipmentModel = this.getView().getModel("shipmentModel");
+
             var shipmentData = shipmentModel.getData();
 
-            // Get the current added/modified/removed document (shipment)
-            // of the collection (shipments)
             snapshot.docChanges().forEach(function (change) {
-              // set id (to know which document is modifed and
-              // replace it on change.Type == modified)
-              // and data of firebase document
               var oShipment = change.doc.data();
               oShipment.id = change.doc.id;
 
-              // Added document (shipment) add to arrat
               if (change.type === "added") {
                 shipmentData.shipments.push(oShipment);
-              }
-              // Modified document (find its index and change current doc
-              // with the updated version)
-              else if (change.type === "modified") {
+              } else if (change.type === "modified") {
                 var index = shipmentData.shipments
                   .map(function (shipment) {
                     return shipment.id;
                   })
                   .indexOf(oShipment.id);
                 shipmentData.shipments[index] = oShipment;
-              }
-              // Removed document (find index and remove it from the shipments array)
-              else if (change.type === "removed") {
+              } else if (change.type === "removed") {
                 var index = shipmentData.shipments
                   .map(function (shipment) {
                     return shipment.id;
@@ -91,15 +106,13 @@ sap.ui.define(
                 shipmentData.shipments.splice(index, 1);
               }
             });
-
-            //Refresh your model and the binding of the items in the table
-            this.getView().getModel().refresh(true);
+            this.getView().getModel("shipmentModel").refresh(true);
             this.getView().byId("shipmentTable").getBinding("items").refresh();
           }.bind(this)
         );
       },
+	  
 
-      //Fragment and CRUD Controls
       _getDialog: function () {
         if (!this._oDialog) {
           this._oDialog = sap.ui.xmlfragment(
@@ -115,16 +128,29 @@ sap.ui.define(
         this._getDialog().open();
       },
 
+      clearAddedShipment: function () {
+        this.getView()
+          .getModel("shipmentModel")
+          .getContext("/currentShipment")
+          .getModel()
+          .getData().currentShipment = {};
+        this.getView()
+          .getModel("shipmentModel")
+          .getContext("/currentShipment")
+          .getModel()
+          .setProperty("/selectedKey", "");
+        this.getView().getModel("shipmentModel").refresh(true);
+      },
 
       closeDialog: function (oEvent) {
-        // if (
-        //   this.getView()
-        //     .getModel("shipmentModel")
-        //     .getContext("/currentShipment")
-        //     .getObject()
-        // ) {
-        //   this.clearAddedShipment(oEvent);
-        // }
+        if (
+          this.getView()
+            .getModel("shipmentModel")
+            .getContext("/currentShipment")
+            .getObject()
+        ) {
+          this.clearAddedShipment(oEvent);
+        }
         this._getDialog().close();
       },
 
@@ -166,7 +192,7 @@ sap.ui.define(
       },
 
       onDeleteShipment: function (oEvent) {
-        var me = this;
+        var placeholder = this;
         var shipmentId = oEvent.getSource().data().shipment.id;
         var shipmentCode = oEvent.getSource().data().shipment.code;
         MessageBox.confirm(
@@ -175,19 +201,20 @@ sap.ui.define(
             actions: [sap.m.MessageBox.Action.YES, sap.m.MessageBox.Action.NO],
             onClose: function (sAction) {
               if (sAction === "YES") {
-                me.collRefShipments
+                placeholder.collRefShipments
                   .doc(shipmentId)
                   .delete()
                   .then(
                     function () {
-                      me.getView()
+                      placeholder
+                        .getView()
                         .byId("shipmentTable")
                         .getBinding("items")
                         .refresh();
-                      me.showMessageToast(
+                      placeholder.showMessageToast(
                         "Shipment: " + shipmentCode + " deleted successfully."
                       );
-                    }.bind(me)
+                    }.bind(placeholder)
                   )
                   .catch(function (error) {
                     console.error(
