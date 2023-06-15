@@ -1,116 +1,142 @@
 {
-  "_version": "1.49.0",
-  "sap.app": {
-    "id": "nodebaseui5",
-    "type": "application",
-    "i18n": "i18n/i18n.properties",
-    "applicationVersion": {
-      "version": "0.0.1"
+    "_version": "1.49.0",
+    "sap.app": {
+        "id": "nodebaseui5",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "@sap/generator-fiori:basic",
+            "version": "1.9.2",
+            "toolsId": "f582b2ee-13a1-4c98-94bf-d871fec35c05"
+        },
+        "crossNavigation": {
+            "inbounds": {
+                "nodebaseui5-inbound": {
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    },
+                    "semanticObject": "semanticObject",
+                    "action": "display",
+                    "title": "{{flpTitle}}",
+                    "subTitle": "{{flpSubtitle}}",
+                    "icon": ""
+                }
+            }
+        }
     },
-    "title": "{{appTitle}}",
-    "description": "{{appDescription}}",
-    "resources": "resources.json",
-    "sourceTemplate": {
-      "id": "@sap/generator-fiori:basic",
-      "version": "1.9.2",
-      "toolsId": "f582b2ee-13a1-4c98-94bf-d871fec35c05"
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": false,
+        "dependencies": {
+            "minUI5Version": "1.112.1",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.f": {},
+                "sap.suite.ui.generic.template": {},
+                "sap.ui.comp": {},
+                "sap.ui.generic.app": {},
+                "sap.ui.table": {},
+                "sap.ushell": {}
+            }
+        },
+        "scope": "site",
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "nodebaseui5.i18n.i18n"
+                }
+            }
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/style.css"
+                }
+            ],
+            "js": [
+                {
+                    "uri": "libs/firebase-app.js",
+                    "name": "FirebaseApp",
+                    "version": "6.2.0"
+                },
+                {
+                    "uri": "libs/firebase-firestore.js",
+                    "name": "FirebaseFirestore",
+                    "version": "6.2.0"
+                },
+                {
+                    "uri": "libs/firebase-auth.js",
+                    "name": "FirebaseAuth",
+                    "version": "6.2.0"
+                }
+            ]
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "async": true,
+                "viewPath": "nodebaseui5.view",
+                "controlAggregation": "pages",
+                "controlId": "app",
+                "clearControlAggregation": false
+            },
+            "routes": [
+                {
+                    "name": "RouteView",
+                    "pattern": "RouteView",
+                    "target": [
+                        "RouteView"
+                    ]
+                }
+            ],
+            "targets": {
+                "TargetView": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "View",
+                    "viewName": "View"
+                }
+            }
+        },
+        "rootView": {
+            "viewName": "nodebaseui5.view.View",
+            "type": "XML",
+            "async": true,
+            "id": "nodebaseui5.view.View"
+        }
+    },
+    "sap.cloud": {
+        "public": true,
+        "service": "nodebaseui5"
     }
-  },
-  "sap.ui": {
-    "technology": "UI5",
-    "icons": {
-      "icon": "",
-      "favIcon": "",
-      "phone": "",
-      "phone@2": "",
-      "tablet": "",
-      "tablet@2": ""
-    },
-    "deviceTypes": {
-      "desktop": true,
-      "tablet": true,
-      "phone": true
-    }
-  },
-  "sap.ui5": {
-    "flexEnabled": false,
-    "dependencies": {
-      "minUI5Version": "1.112.1",
-      "libs": {
-        "sap.m": {},
-        "sap.ui.core": {},
-        "sap.f": {},
-        "sap.suite.ui.generic.template": {},
-        "sap.ui.comp": {},
-        "sap.ui.generic.app": {},
-        "sap.ui.table": {},
-        "sap.ushell": {}
-      }
-    },
-    "contentDensities": {
-      "compact": true,
-      "cozy": true
-    },
-    "models": {
-      "i18n": {
-        "type": "sap.ui.model.resource.ResourceModel",
-        "settings": {
-          "bundleName": "nodebaseui5.i18n.i18n"
-        }
-      }
-    },
-    "resources": {
-      "css": [
-        {
-          "uri": "css/style.css"
-        }
-      ],
-      "js": [{
-				"uri": "libs/firebase-app.js",
-				"name": "FirebaseApp",
-				"version": "6.2.0"
-			}, {
-				"uri": "libs/firebase-firestore.js",
-				"name": "FirebaseFirestore",
-				"version": "6.2.0"
-			}, {
-				"uri": "libs/firebase-auth.js",
-				"name": "FirebaseAuth",
-				"version": "6.2.0"
-			}]
-    },
-    "routing": {
-      "config": {
-        "routerClass": "sap.m.routing.Router",
-        "viewType": "XML",
-        "async": true,
-        "viewPath": "nodebaseui5.view",
-        "controlAggregation": "pages",
-        "controlId": "app",
-        "clearControlAggregation": false
-      },
-      "routes": [
-        {
-          "name": "RouteView",
-          "pattern": "RouteView",
-          "target": ["RouteView"]
-        }
-      ],
-      "targets": {
-        "TargetView": {
-          "viewType": "XML",
-          "transition": "slide",
-          "clearControlAggregation": false,
-          "viewId": "View",
-          "viewName": "View"
-        }
-      }
-    },
-    "rootView": {
-      "viewName": "nodebaseui5.view.View",
-      "type": "XML",
-      "async": true,
-      "id": "nodebaseui5.view.View"
-    }
-  }
 }
